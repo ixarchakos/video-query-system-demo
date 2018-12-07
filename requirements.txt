@@ -1,0 +1,6 @@
+python-forecastio
+flask
+gevent
+pytz
+Image
+flask-socketio
