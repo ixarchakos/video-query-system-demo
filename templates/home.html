@@ -6,7 +6,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
   <script language="JavaScript" type="text/javascript" src="static/backend.js"></script>
-
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 <link rel="stylesheet" type="text/css" href="static/style.css"> 
@@ -109,13 +108,23 @@
         </div>
         <div class="col-sm-4">
           <div class="well">
-            <p>Text</p> 
+            <input type="text" id="optimized" oninput=myFunction()>
           </div>
         </div>
       </div>
     </div>
   </div>
 </div>
+<script type="text/javascript">
 
+document.getElementById("optimized").onload = function() {myFunction()};
+var i = 0;
+function myFunction() {
+    i = i + 1;
+    var x = document.getElementById("optimized");
+    x.value = i;
+  }
+
+</script>
 </body>
 </html>
