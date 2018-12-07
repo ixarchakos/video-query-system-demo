@@ -33,8 +33,8 @@ def get_image_prediction(dataset):
 	image_list = ['aa', 'bb', 'cc', 'dd', 'ee', 'ff', 'll', 'ww']
 	for i in image_list:
 		print(i)
-		time.sleep(5) 
-	return jsonify({"result": {'value':i}})
+	# jsonify({"result": {'value':i}})
+	
 
 @app.route("/index")
 @app.route("/", methods=["GET"])

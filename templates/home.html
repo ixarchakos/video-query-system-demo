@@ -52,18 +52,12 @@
         <p>Some text..</p>
       </div>
       <div class="row">
-        <div class="col-sm-3">
+        <div class="col-sm-6">
           <div class="well">
-            <h4>Users</h4>
-            <p>1 Million</p> 
+            <canvas id="canvas"/>
           </div>
         </div>
-        <div class="col-sm-3">
-          <div class="well">
-            <h4>Pages</h4>
-            <button type="button" id="button">Get Width and Height</button>
-          </div>
-        </div>
+        
         <div class="col-sm-3">
           <div class="well">
             <h4>Sessions</h4>
@@ -117,15 +111,49 @@
 </div>
 
 <script type="text/javascript">
-
+window.onload = init;
 document.getElementById("optimized").onload = function() {myFunction()};
 var i = 0;
 function myFunction() {
     i = i + 1;
     var x = document.getElementById("optimized");
     x.value = i;
-  }
-
+}
+// var url = "cam1.php"; //url to load image from
+var refreshInterval = 500; //in ms
+var drawDate = true; //draw date string
+var img;
+var ii = 0;
+var urls = ["/static/images/detrac/MVI_20011_img00525.jpg", "https://www.sport24.gr/Basket/article5382201.ece/BINARY/w620/1.jpg", "https://www.sport24.gr/Basket/USA/NBA/article5382155.ece/BINARY/w620/Jake+Layman.jpg"];
+function init() {
+    var canvas = document.getElementById("canvas");
+    var context = canvas.getContext("2d");
+    img = new Image();
+    img.onload = function() {
+        
+        canvas.setAttribute("width", img.width)
+        canvas.setAttribute("height", img.height)
+        context.drawImage(this, 0, 0);
+        if(drawDate) {
+          i = i + 1
+            var now = new Date();
+            var text = now.toLocaleDateString() + " " + now.toLocaleTimeString();
+            var maxWidth = 100;
+            var x = img.width-10-maxWidth;
+            var y = img.height-10;
+            context.strokeStyle = 'black';
+            context.lineWidth = 2;
+            context.strokeText(text, x, y, maxWidth);
+            context.fillStyle = 'white';
+            context.fillText(text, x, y, maxWidth);
+        }
+    };
+    refresh();
+}
+function refresh(){
+    img.src = urls[i] + "?t=" + new Date().getTime();
+    setTimeout("refresh()",refreshInterval);
+}
 </script>
 </body>
 </html>
