@@ -111,32 +111,19 @@
 </div>
 <script type="text/javascript">
   window.onload = init;
-var refreshInterval = 500; //in ms
+var refreshInterval = 50; //in ms
 var drawDate = true; //draw date string
 var img;
 var ii = 0;
 var i = 0;
-var urls = ["/static/images/detrac/MVI_20011_img00525.jpg", "https://www.sport24.gr/Basket/article5382201.ece/BINARY/w620/1.jpg", "https://www.sport24.gr/Basket/USA/NBA/article5382155.ece/BINARY/w620/Jake+Layman.jpg"];
+// var urls = ["/static/images/detrac/MVI_20011_img00525.jpg", "https://www.sport24.gr/Basket/article5382201.ece/BINARY/w620/1.jpg", "https://www.sport24.gr/Basket/USA/NBA/article5382155.ece/BINARY/w620/Jake+Layman.jpg"];
 var url;
+var canvas = document.getElementById("canvas");
+var context = canvas.getContext("2d");
+img = new Image();
 function init() {
-    var canvas = document.getElementById("canvas");
-    var context = canvas.getContext("2d");
-    img = new Image();
-
     img.onload = function() {
-        $.ajax("{{ url_for('get_image_prediction') }}", {
-               type : "POST",
-               data: JSON.stringify({'count': ii}, null, '\t'),
-               contentType: 'application/json;charset=UTF-8',
-               success: function(res) {
-                var obj = res.result;
-                // alert(obj.result.value);
-                // url = '/static/images/detrac/' + obj.result.value;
-                console.log(obj.value)
-                ii = ii + 1
-                // alert(ii)
-               }
-        });
+        
         canvas.setAttribute("width", img.width)
         canvas.setAttribute("height", img.height)
         context.drawImage(this, 0, 0);
@@ -154,11 +141,23 @@ function init() {
             context.fillText(text, x, y, maxWidth);
         }
     };
-    refresh();
+    $.ajax("{{ url_for('get_image_prediction') }}", {
+               type : "POST",
+               data: JSON.stringify({'count': ii}, null, '\t'),
+               contentType: 'application/json;charset=UTF-8',
+               success: function(res) {
+                var obj = res.result;
+                img_location = '/static/images/detrac/';
+                url = img_location.concat(String(obj.value));
+                ii = ii + 1;
+                refresh();
+               }
+        });
+    
 }
 function refresh(){
-    img.src = urls[i] + "?t=" + new Date().getTime();
-    setTimeout("refresh()",refreshInterval);
+    img.src = url + "?t=" + new Date().getTime();
+    setTimeout("init()",refreshInterval);
 }
 </script>
 </body>
