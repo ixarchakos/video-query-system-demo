@@ -52,18 +52,6 @@
         <p>Some text..</p>
       </div>
       <div class="row">
-        <div class="col-sm-3">
-          <div class="well">
-            <h4>Users</h4>
-            <p>1 Million</p> 
-          </div>
-        </div>
-        <div class="col-sm-3">
-          <div class="well">
-            <h4>Pages</h4>
-            <button type="button" id="button">Get Width and Height</button>
-          </div>
-        </div>
         <div class="col-sm-6">
           <div class="well">
             <canvas id="canvas"/>
@@ -121,20 +109,34 @@
     </div>
   </div>
 </div>
-<<<<<<< HEAD
 <script type="text/javascript">
-// var url = "cam1.php"; //url to load image from
+  window.onload = init;
 var refreshInterval = 500; //in ms
 var drawDate = true; //draw date string
 var img;
 var ii = 0;
+var i = 0;
 var urls = ["/static/images/detrac/MVI_20011_img00525.jpg", "https://www.sport24.gr/Basket/article5382201.ece/BINARY/w620/1.jpg", "https://www.sport24.gr/Basket/USA/NBA/article5382155.ece/BINARY/w620/Jake+Layman.jpg"];
+var url;
 function init() {
     var canvas = document.getElementById("canvas");
     var context = canvas.getContext("2d");
     img = new Image();
+
     img.onload = function() {
-        
+        $.ajax("{{ url_for('get_image_prediction') }}", {
+               type : "POST",
+               data: JSON.stringify({'count': ii}, null, '\t'),
+               contentType: 'application/json;charset=UTF-8',
+               success: function(res) {
+                var obj = res.result;
+                // alert(obj.result.value);
+                // url = '/static/images/detrac/' + obj.result.value;
+                console.log(obj.value)
+                ii = ii + 1
+                // alert(ii)
+               }
+        });
         canvas.setAttribute("width", img.width)
         canvas.setAttribute("height", img.height)
         context.drawImage(this, 0, 0);
