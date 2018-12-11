@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <title>Bootstrap Example</title>
+  <title>Query Video System</title>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
@@ -35,13 +35,12 @@
 
 <div class="container-fluid">
   <div class="row content">
-    <div class="col-sm-3 sidenav hidden-xs">
-      <h2>Logo</h2>
+    <div class="col-sm-3 sidenav hidden-xs" style="margin-top: 21px;">
+      <h2>Query Video System</h2>
       <ul class="nav nav-pills nav-stacked">
         <li class="active"><a href="#section1">Dashboard</a></li>
-        <li><a href="#section2" ">Age</a></li>
-        <li><a href="#section3">Gender</a></li>
-        <li><a href="#section3">Geo</a></li>
+        <li><a href="#section2" ">Report</a></li>
+
       </ul><br>
     </div>
     <br>
@@ -51,58 +50,41 @@
         <h4>Dashboard</h4>
         <p>Some text..</p>
       </div>
-      <div class="row">
-        <div class="col-sm-6">
+      <div class="row" ssss>
+        <div class="col-sm-3">
           <div class="well">
-            <canvas id="canvas"/>
+            <canvas id="canvas" height="280" width="280"/>
           </div>
         </div>
         
-        <div class="col-sm-3">
-          <div class="well">
+        <div class="col-sm-3"  >
+          <div class="well"  style="height:320px;">
             <h4>Sessions</h4>
             <p>10 Million</p> 
           </div>
         </div>
-        <div class="col-sm-3">
-          <div class="well">
+        <div class="col-sm-6">
+          <div class="well"  style="height:320px;">
             <h4>Bounce</h4>
             <p>30%</p> 
           </div>
         </div>
       </div>
       <div class="row">
-        <div class="col-sm-4">
+        <div class="col-sm-3">
           <div class="well">
             <p>Text</p> 
-            <p>Text</p> 
-            <p>Text</p> 
+
           </div>
         </div>
-        <div class="col-sm-4">
-          <div class="well">
-            <p>Text</p> 
-            <p>Text</p> 
-            <p>Text</p> 
-          </div>
-        </div>
-        <div class="col-sm-4">
-          <div class="well">
-            <p>Text</p> 
-            <p>Text</p> 
-            <p>Text</p> 
-          </div>
-        </div>
-      </div>
-      <div class="row">
-        <div class="col-sm-8">
+        <div class="col-sm-3">
           <div class="well">
             <p>Text</p> 
           </div>
         </div>
-        <div class="col-sm-4">
+        <div class="col-sm-6">
           <div class="well">
-            <input type="text" id="optimized" oninput=myFunction()>
+            <p>Text</p>  
           </div>
         </div>
       </div>
@@ -110,23 +92,21 @@
   </div>
 </div>
 <script type="text/javascript">
-  window.onload = init;
-var refreshInterval = 50; //in ms
+window.onload = init;
+var refreshInterval = 25; //in ms
 var drawDate = true; //draw date string
 var img;
 var ii = 0;
 var i = 0;
-// var urls = ["/static/images/detrac/MVI_20011_img00525.jpg", "https://www.sport24.gr/Basket/article5382201.ece/BINARY/w620/1.jpg", "https://www.sport24.gr/Basket/USA/NBA/article5382155.ece/BINARY/w620/Jake+Layman.jpg"];
 var url;
 var canvas = document.getElementById("canvas");
 var context = canvas.getContext("2d");
 img = new Image();
 function init() {
     img.onload = function() {
-        
-        canvas.setAttribute("width", img.width)
-        canvas.setAttribute("height", img.height)
-        context.drawImage(this, 0, 0);
+        canvas.setAttribute("width", 280)
+        canvas.setAttribute("height", 280)
+        context.drawImage(this, 0, 0, 280, 280);
         if(drawDate) {
           i = i + 1
             var now = new Date();
@@ -153,12 +133,16 @@ function init() {
                 refresh();
                }
         });
-    
 }
 function refresh(){
     img.src = url + "?t=" + new Date().getTime();
     setTimeout("init()",refreshInterval);
 }
 </script>
+<style>
+.well {
+    background-color: #f1f1f1;
+}
+</style>
 </body>
 </html>
