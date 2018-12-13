@@ -6,8 +6,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
   <script language="JavaScript" type="text/javascript" src="static/backend.js"></script>
+  <script src="static/radarChart.js"></script> 
+  
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.6/d3.min.js" charset="utf-8"></script>
 <link rel="stylesheet" type="text/css" href="static/style.css"> 
 </head>
 <body>
@@ -52,38 +56,37 @@
       </div>
       <div class="row" ssss>
         <div class="col-sm-3">
-          <div class="well">
-            <canvas id="canvas" height="280" width="280"/>
+          <div class="well" id="canvas1">
+            <canvas id="canvas" height="320" width="320"/>
           </div>
         </div>
         <div class="col-sm-3"  >
           <div class="well"  style="height:320px;">
             <h4>Sessions</h4>
-            <p>10 Million</p> 
           </div>
         </div>
         <div class="col-sm-6">
           <div class="well"  style="height:320px;">
             <h4>Bounce</h4>
-            <p>30%</p> 
+            <div class="chart" style="width: 50%; margin-left: 100px auto;"></div>
           </div>
         </div>
       </div>
       <div class="row">
         <div class="col-sm-3">
-          <div class="well">
+          <div class="well" style="height:320px;">
             <p>Text</p> 
 
           </div>
         </div>
         <div class="col-sm-3">
-          <div class="well">
+          <div class="well" style="height:320px;">
             <p>Text</p> 
           </div>
         </div>
         <div class="col-sm-6">
-          <div class="well">
-            <p>Text</p>  
+          <div class="well" style="width:100%; height:320px;">
+            <div class="radarChart" style="width: 50%; margin: 0px auto;"></div>
           </div>
         </div>
       </div>
@@ -92,7 +95,7 @@
 </div>
 <script type="text/javascript">
 window.onload = init;
-var refreshInterval = 25; //in ms
+var refreshInterval = 10; //in ms
 var drawDate = true; //draw date string
 var img;
 var ii = 0;
@@ -102,6 +105,57 @@ var canvas = document.getElementById("canvas");
 var context = canvas.getContext("2d");
 img = new Image();
 function init() {
+
+  ////
+  var margin = {top: 5, right: 5, bottom: 5, left: 5},
+        width = 300
+        height = 300
+      var data = [
+            [//iPhone
+            {axis:"Battery Life",value:0.22},
+            {axis:"Brand",value:0.28},
+            {axis:"Contract Cost",value:0.29},
+            {axis:"Design And Quality",value:0.17},
+            {axis:"Have Internet Connectivity",value:0.22},
+            {axis:"Large Screen",value:0.02},
+            {axis:"Price Of Device",value:0.21},
+            {axis:"To Be A Smartphone",value:0.50}      
+            ],[//Samsung
+            {axis:"Battery Life",value:0.27},
+            {axis:"Brand",value:0.16},
+            {axis:"Contract Cost",value:0.35},
+            {axis:"Design And Quality",value:0.13},
+            {axis:"Have Internet Connectivity",value:0.20},
+            {axis:"Large Screen",value:0.13},
+            {axis:"Price Of Device",value:0.35},
+            {axis:"To Be A Smartphone",value:0.38}
+            ],[//Nokia Smartphone
+            {axis:"Battery Life",value:0.26},
+            {axis:"Brand",value:0.10},
+            {axis:"Contract Cost",value:0.30},
+            {axis:"Design And Quality",value:0.14},
+            {axis:"Have Internet Connectivity",value:0.22},
+            {axis:"Large Screen",value:0.04},
+            {axis:"Price Of Device",value:0.41},
+            {axis:"To Be A Smartphone",value:0.30}
+            ]
+          ];
+      var color = d3.scale.ordinal()
+        .range(["#EDC951","#CC333F","#00A0B0"]);
+        
+      var radarChartOptions = {
+        w: width,
+        h: height,
+        margin: margin,
+        maxValue: 0.5,
+        levels: 5,
+        roundStrokes: true,
+        color: color
+      };
+      //Call function to draw the Radar chart
+      RadarChart(".radarChart", data, radarChartOptions);
+      ////
+
     img.onload = function() {
         canvas.setAttribute("width", 280)
         canvas.setAttribute("height", 280)
@@ -129,6 +183,11 @@ function init() {
                 var obj = res.result;
                 img_location = '/static/images/detrac/';
                 url = img_location.concat(String(obj.value));
+                if (Math.random() < 0.2){
+                  $("#canvas1").css("background-color","red");
+                } else {
+                  $("#canvas1").css("background-color","green");
+                }
                 ii = ii + 1;
                 refresh();
                }
@@ -144,5 +203,7 @@ function refresh(){
     background-color: #f1f1f1;
 }
 </style>
+<script src="static/chart.js"></script>
+<link rel="stylesheet" href="static/chart.css">
 </body>
 </html>
