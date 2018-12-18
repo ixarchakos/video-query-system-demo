@@ -9,6 +9,7 @@
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 <link rel="stylesheet" type="text/css" href="static/style.css"> 
+<script src="http://d3js.org/d3.v3.min.js"></script>
 </head>
 <body>
 
@@ -52,38 +53,38 @@
       </div>
       <div class="row" ssss>
         <div class="col-sm-3">
-          <div class="well">
+          <div class="well" id="canvas1">
             <canvas id="canvas" height="280" width="280"/>
           </div>
         </div>
         
         <div class="col-sm-3"  >
-          <div class="well"  style="height:320px;">
-            <h4>Sessions</h4>
-            <p>10 Million</p> 
+          <div class="well" id="aster1" style="height:320px;">
+            <h4>Sessions</h4>            
+            <svg width="300" height="300" id="aster"></svg> 
           </div>
         </div>
         <div class="col-sm-6">
           <div class="well"  style="height:320px;">
             <h4>Bounce</h4>
-            <p>30%</p> 
+
           </div>
         </div>
       </div>
       <div class="row">
         <div class="col-sm-3">
           <div class="well">
-            <p>Text</p> 
+            <canvas id="canvas_1" height="280" width="280"/>
 
           </div>
         </div>
         <div class="col-sm-3">
-          <div class="well">
+          <div class="well" style="height:320px;">
             <p>Text</p> 
           </div>
         </div>
         <div class="col-sm-6">
-          <div class="well">
+          <div class="well" style="height:320px;">
             <p>Text</p>  
           </div>
         </div>
@@ -127,6 +128,12 @@ function init() {
                contentType: 'application/json;charset=UTF-8',
                success: function(res) {
                 var obj = res.result;
+                if (Math.random() < 0.1){
+                  document.getElementById("canvas1").setAttribute("style", "background-color: red;")
+                } else {
+                  document.getElementById("canvas1").setAttribute("style", "background-color: green;")
+                }
+                
                 img_location = '/static/images/detrac/';
                 url = img_location.concat(String(obj.value));
                 ii = ii + 1;
@@ -138,6 +145,8 @@ function refresh(){
     img.src = url + "?t=" + new Date().getTime();
     setTimeout("init()",refreshInterval);
 }
+
+
 </script>
 <style>
 .well {
