@@ -1,15 +1,21 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <title>Query Video System</title>
+  <title>SVQ</title>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
   <script language="JavaScript" type="text/javascript" src="static/backend.js"></script>
+  <script src="static/radarChart.js"></script> 
+    <script type="text/javascript" src="static/gauge.js"></script>
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.6/d3.min.js" charset="utf-8"></script>
 <link rel="stylesheet" type="text/css" href="static/style.css"> 
-<script src="http://d3js.org/d3.v3.min.js"></script>
+  <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+
+<script src="https://d3js.org/d3.v4.min.js"></script>
 </head>
 <body>
 
@@ -36,8 +42,9 @@
 
 <div class="container-fluid">
   <div class="row content">
-    <div class="col-sm-3 sidenav hidden-xs" style="margin-top: 21px;">
-      <h2>Query Video System</h2>
+    <div class="col-sm-3 sidenav hidden-xs" style="margin-top: 40px;margin-left: 0px;height:890px;">
+      <h2>SVQ: Streaming Video Queries</h2>
+      <br>
       <ul class="nav nav-pills nav-stacked">
         <li class="active"><a href="#section1">Dashboard</a></li>
         <li><a href="#section2" ">Report</a></li>
@@ -45,47 +52,133 @@
       </ul><br>
     </div>
     <br>
-    
+    <div id="hid_div" style="visibility: hidden; display:inline;">a</div>
     <div class="col-sm-9">
-      <div class="well">
-        <h4>Dashboard</h4>
-        <p>Some text..</p>
+      <div class="col-sm-3">
+      <div class="well" style="height:200px; width: 100%;">
+
+         <div class="row" style="margin-left: 10px;">
+          <div class="topcorner"><font size="6" color="red"> A </font> </div>
+        <h4><b><u><font size="4">Video source selection</font></u></b></h4>
+        <div id="radio_data">
+
+          <input type="radio" id="det" name="project" value="Detrac">
+          <label for="det">Detrac</label>
+     
+          <input type="radio" id="aqu" name="project" checked="checked" value="Aquarium" >
+          <label for="aqu">Aquarium</label>
+     
+          <input type="radio" id="squ" name="project" value="Square">
+          <label for="squ">Square</label>
+        </div>
       </div>
-      <div class="row" ssss>
-        <div class="col-sm-3">
-          <div class="well" id="canvas1">
+        <div class="row" style="margin-left: 10px;">
+        <h4><b><u><font size="4">Video mode</font></u></b></h4>
+        <div id="radio_video">
+          <input type="radio" id="normal" name="mode" value="Normal mode">
+          <label for="normal">Normal mode</label>
+     
+          <input type="radio" id="slow" name="mode" value="Slow mode">
+          <label for="slow">Slow mode</label>
+        </div>
+      </div>
+      </div>
+    </div>
+    <div class="col-sm-4">
+
+      <div class="well" style="height:200px;">
+        <div class="row" style="margin-left: 10px;">
+          <div class="topcorner"><font size="6" color="red"> B </font> </div>
+        <h4><b><u><font size="4">Filter selection</font></u></b></h4>
+        <div id="radio">
+          <input type="radio" id="cou" name="project1" value="Count">
+          <label for="cou">Count</label>
+     
+          <input type="radio" id="cls" name="project1" checked="checked" value="Class count">
+          <label for="cls">Class count</label>
+     
+          <input type="radio" id="loc" name="project1" value="Localisation">
+          <label for="loc">Localisation</label>
+
+          <input type="radio" id="agg" name="project1" value="Aggregates">
+          <label for="agg">Aggregates</label>
+        </div>
+      </div>
+    </div>
+    </div>
+    <div class="col-sm-5">
+      <div class="well" style="height:200px;width: 100%;">
+        <div class="topcorner"><font size="6" color="red"> C </font> </div>
+        <label for="sql_text"><font size="4">SQL query</font></label>
+            <textarea readonly class="form-control" id="sql_text" rows="4" style="background-color: lightyellow"></textarea>
+        <br>
+        <div class="col-sm-6" style="text-align: right;">
+          <button id="opt">Optimisation</button>
+        </div>
+        <div class="col-sm-6" >
+          <button id="bru">Brute Force</button>
+        </div>
+      </div>
+    </div>
+      <div class="row">
+        <div class="col-sm-4">
+          <div class="well" id="canvas1" style="height:320px;">
+            <div class="topcorner"><font size="6" color="red"> D </font> </div>
             <canvas id="canvas" height="280" width="280"/>
           </div>
         </div>
-        
-        <div class="col-sm-3"  >
-          <div class="well" id="aster1" style="height:320px;">
-            <h4>Sessions</h4>            
-            <svg width="300" height="300" id="aster"></svg> 
+        <div class="col-sm-4"  >
+          <div class="well" style="height:320px;width: 100%;">
+            <div class="topcorner"><font size="6" color="red"> E </font> </div>
+            <h4>Accuracy</h4>
+            <div class="col-sm-9"  >
+              <div id="accopt"></div>
+            </div>
+            <div class="col-sm-3"  >
+              <div class="legend1" style="display: none;"> <p class="country-name"><span class="key-dot car"></span>Car</p> </div>
+              <div class="legend1" style="display: none;"> <p class="country-name"><span class="key-dot person"></span>Person</p> </div>
+              <div class="legend1" style="display: none;"> <p class="country-name"><span class="key-dot truck"></span>Truck</p> </div>
+              <div class="legend1" style="display: none;"> <p class="country-name"><span class="key-dot bus"></span>Bus</p> </div>
+              <div id="no_optimisation" class="legend1" style="display: none;"> <p class="country-name"><span class="key-dot no"></span>No class</p> </div>
+            </div>
           </div>
         </div>
-        <div class="col-sm-6">
+        <div class="col-sm-4">
           <div class="well"  style="height:320px;">
-            <h4>Bounce</h4>
-
+            <div class="topcorner"><font size="6" color="red"> F </font> </div>
+            <h4>Time Performance</h4>
+            <div id="time1"></div>
           </div>
         </div>
       </div>
       <div class="row">
-        <div class="col-sm-3">
-          <div class="well">
-            <canvas id="canvas_1" height="280" width="280"/>
-
+        <div class="col-sm-4">
+          <div class="well" id="canvas3" style="height:320px;">
+            <div class="topcorner"><font size="6" color="red"> G </font> </div>
+            <canvas id="canvas2" height="280" width="280"/>
           </div>
         </div>
-        <div class="col-sm-3">
-          <div class="well" style="height:320px;">
-            <p>Text</p> 
+        <div class="col-sm-4">
+            <div class="well" style="height:320px;width: 100%;">
+              <div class="topcorner"><font size="6" color="red"> H </font> </div>
+            <h4>Accuracy</h4>
+            <div class="col-sm-9"  >
+              <div id="accopt1"></div>
+            </div>
+            <div class="col-sm-3"  >
+              <div class="legend0" style="display: none;"> <p class="country-name"><span class="key-dot car"></span>Car</p> </div>
+              <div class="legend0" style="display: none;"> <p class="country-name"><span class="key-dot person"></span>Person</p> </div>
+              <div class="legend0" style="display: none;"> <p class="country-name"><span class="key-dot truck"></span>Truck</p> </div>
+              <div class="legend0" style="display: none;"> <p class="country-name"><span class="key-dot bus"></span>Bus</p> </div>
+              <div id="no_brute_force" class="legend0" style="display: none;"> <p class="country-name"><span class="key-dot no"></span>No class</p> </div>
+            </div>
           </div>
         </div>
-        <div class="col-sm-6">
-          <div class="well" style="height:320px;">
-            <p>Text</p>  
+        <div class="col-sm-4">
+          <div class="well" style="width:100%; height:320px;">
+            <div class="topcorner"><font size="6" color="red"> I </font> </div>
+            <h4>Time Performance</h4>
+            <div id="time"></div>
           </div>
         </div>
       </div>
@@ -93,26 +186,167 @@
   </div>
 </div>
 <script type="text/javascript">
-window.onload = init;
-var refreshInterval = 25; //in ms
+      flag = true;
+var canvas;
+    var canvas1;
+var context;
+$( function() {
+    
+    
+    var inputVideo = "Detrac";
+    var results_id;
+    var count_query;
+    var refreshInterval;
+    var $radios1 = $('input[name="project"]');
+    $radios1.change(function() {
+      inputVideo = $('input[name="project"]:checked').val().toLowerCase();
+      count_query = "SELECT cameraID, count(frameID), C1(F1(vehBox1)) AS vehType1, C3(F3(SignBox1)) AS SignType2, C2(F2(vehBox1)) AS vehColor FROM (PROCESS " + inputVideo + " PRODUCE cameraID, frameID, vehBox1 USING VehDetector, SignBox1 USING SignDetector) WINDOW HOPING (SIZE 5000, ADVANCE BY 5000)";
+    });
+
+    
+
+    var $radios = $('input[name="project1"]');
+    $radios.change(function() {
+      var algorithm = $('input[name="project1"]:checked').val();
+      if (algorithm == "Count") {
+        $('#sql_text').val(count_query);
+      }
+    });
+
+    
+
+    
+    var q = "SELECT cameraID, count(frameID),C1(F1(vehBox1)) AS vehType1, C3(F3(SignBox1)) AS SignType2, C2(F2(vehBox1)) AS vehColor FROM (PROCESS inputVideo PRODUCE cameraID, frameID, vehBox1 USING VehDetector, SignBox1 USING SignDetector)WHERE vehType1 = car AND vehColor = blue AND vehType2 = Stop-Sign AND (ORDER(vehType1, SignBox1) = RIGHT) WINDOW HOPING (SIZE 5000, ADVANCE BY 5000)"
+    var $radios2 = $('input[name="mode"]');
+      $radios2.change(function() {
+        var interval = $('input[name="mode"]:checked').val();
+        if (interval == "Normal mode") {
+          refreshInterval = 0.7;
+        }
+        else {
+          refreshInterval = 1000;
+        }
+      });
+    
+     
+    var ii = 0;
+    $( "#radio" ).controlgroup();
+    $( "#radio_data" ).controlgroup();
+    $( "#radio_video" ).controlgroup();
+
+    $( "#selectable" ).selectable();
+    $ ("#opt").click(function() {
+      ii = 0;
+      in_canv = "canvas";
+      out_canv = "canvas1";
+      results_id = "accopt";
+      // refreshInterval = 0.7;
+      if (refreshInterval == 300){
+        refreshInterval = 0.7;
+      } else if (refreshInterval == 1001) {
+        refreshInterval = 1000;
+      }
+      canvas = document.getElementById(in_canv);
+      canvas1 = document.getElementById(out_canv);
+      context = canvas.getContext("2d");
+
+      Myfunction(refreshInterval, inputVideo);
+      init(true, ii, refreshInterval, inputVideo, results_id);
+
+    });
+    $ ("#bru").click(function() {
+      ii = 0;
+      in_canv = "canvas2";
+      out_canv = "canvas3";
+      results_id = "accopt1";
+      if (refreshInterval == 0.7){
+        refreshInterval = 300;
+      } else {
+        refreshInterval = 1001;
+      }
+      canvas = document.getElementById(in_canv);
+      canvas1 = document.getElementById(out_canv);
+      context = canvas.getContext("2d");
+      Myfunction(refreshInterval, inputVideo);
+      init(true, ii, refreshInterval, inputVideo, results_id);
+    });
+    ////
+  var margin = {top: 5, right: 5, bottom: 5, left: 5},
+        width = 250
+        height = 250
+      var data = [
+            [//iPhone
+            {axis:"Battery Life",value:0.22},
+            {axis:"Truck",value:0.28},
+            {axis:"Contract Cost",value:0.29},
+            {axis:"Person",value:0.17},
+            {axis:"Have Internet Connectivity",value:0.22},
+            {axis:"Bus",value:0.02},
+            {axis:"Price Of Device",value:0.21},
+            {axis:"Car",value:0.50}      
+            ],[//Samsung
+            {axis:"Battery Life",value:0.27},
+            {axis:"Brand",value:0.16},
+            {axis:"Contract Cost",value:0.35},
+            {axis:"Pedestrian",value:0.13},
+            {axis:"Have Internet Connectivity",value:0.20},
+            {axis:"Bus",value:0.13},
+            {axis:"Truck",value:0.35},
+            {axis:"Car",value:0.38}
+            ],[//Nokia Smartphone
+            {axis:"Battery Life",value:0.26},
+            {axis:"Brand",value:0.10},
+            {axis:"Contract Cost",value:0.30},
+            {axis:"Pedestrian",value:0.14},
+            {axis:"Have Internet Connectivity",value:0.22},
+            {axis:"Pedestrian",value:0.04},
+            {axis:"Pedestrian",value:0.41},
+            {axis:"To Be A Smartphone",value:0.30}
+            ]
+          ];
+      var color = d3.scale.ordinal()
+        .range(["#EDC951","#CC333F","#00A0B0"]);
+        
+      var radarChartOptions = {
+        w: width,
+        h: height,
+        margin: margin,
+        maxValue: 0.5,
+        levels: 5,
+        roundStrokes: true,
+        color: color
+      };
+      //Call function to draw the Radar chart
+      RadarChart(".radarChart", data, radarChartOptions);
+      ////
+  } );
+
+// window.onload = init;
+
 var drawDate = true; //draw date string
 var img;
-var ii = 0;
-var i = 0;
+
 var url;
-var canvas = document.getElementById("canvas");
-var context = canvas.getContext("2d");
+// in_canv = "canvas";
+//       out_canv = "canvas1";
+
+
 img = new Image();
-function init() {
+function init(flag, ii, refreshInterval, inputVideo, results_id) {
+  if (flag) {
+     var margin = {top: 5, right: 5, bottom: 5, left: 5},
+        width = 250
+        height = 250
+    
     img.onload = function() {
-        canvas.setAttribute("width", 280)
+        canvas.setAttribute("width", 390)
         canvas.setAttribute("height", 280)
-        context.drawImage(this, 0, 0, 280, 280);
+        context.drawImage(this, 0, 0, 400, 280);
         if(drawDate) {
-          i = i + 1
             var now = new Date();
             var text = now.toLocaleDateString() + " " + now.toLocaleTimeString();
             var maxWidth = 100;
+            
             var x = img.width-10-maxWidth;
             var y = img.height-10;
             context.strokeStyle = 'black';
@@ -122,36 +356,322 @@ function init() {
             context.fillText(text, x, y, maxWidth);
         }
     };
+    
     $.ajax("{{ url_for('get_image_prediction') }}", {
                type : "POST",
-               data: JSON.stringify({'count': ii}, null, '\t'),
+               data: JSON.stringify({'count': ii, 'input': inputVideo, 'interval':refreshInterval}, null, '\t'),
                contentType: 'application/json;charset=UTF-8',
                success: function(res) {
                 var obj = res.result;
+                console.log(obj.prediction);
                 if (Math.random() < 0.1){
-                  document.getElementById("canvas1").setAttribute("style", "background-color: red;")
+                  document.getElementById(out_canv).setAttribute("style", "background-color: red;")
                 } else {
-                  document.getElementById("canvas1").setAttribute("style", "background-color: green;")
+                  document.getElementById(out_canv).setAttribute("style", "background-color: green;")
                 }
-                
-                img_location = '/static/images/detrac/';
+                img_location = '/static/images/'+inputVideo+'/';
                 url = img_location.concat(String(obj.value));
+                if (obj.prediction){
+                  $("#"+out_canv).css("background-color","green");
+                } else {
+                  $("#"+out_canv).css("background-color","red");
+                }
                 ii = ii + 1;
-                refresh();
-               }
+                refresh(flag, ii, refreshInterval, inputVideo , results_id);
+               },
+              error: function (jqXHR, exception) {
+                var data = [
+                        {name: 'No class', count: 100, percentage: 0, color: '#ffffff'},
+                        // {name: 'car', count: 60, percentage: 53, color: '#1F77B4'},
+                        // {name: 'person', count: 10, percentage: 12, color: '#FF7F0E'},
+                        // {name: 'truck', count: 17, percentage: 30, color: '#2CA02C'},
+                        // {name: 'bus', count: 12, percentage: 5, color: '#000000'},
+                      ];
+                      time_performance(refreshInterval);
+                      if (refreshInterval == 0.7 || refreshInterval == 1000){
+                        $(".legend1").css("display", "block");
+                      } else if (refreshInterval == 300 || refreshInterval == 1001){
+                        $(".legend0").css("display", "block");
+                      }
+                      var total_perc =  parseFloat($("#hid_div").text())  //calcuting total manually
+                      var width = 280,
+                      height = 240,
+                      radius = 95;
+
+                      var arc = d3.arc()
+                        .outerRadius(radius - 10)
+                        .innerRadius(65);
+
+                      var pie = d3.pie()
+                        .sort(null)
+                        .value(function(d) {
+                            return d.count;
+                        });
+                      var svg = d3.select("#"+results_id).append("svg")
+                        .attr("width", width)
+                        .attr("height", height)
+                        .append("g")
+                        .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
+
+                      var g = svg.selectAll(".arc")
+                        .data(pie(data))
+                        .enter().append("g");    
+
+                      g.append("path")
+                        .attr("d", arc)
+                        .style("fill", function(d,i) {
+                          return d.data.color;
+                        });
+
+                      g.append("text")
+                        .attr("transform", function(d) {
+                          var _d = arc.centroid(d);
+                          _d[0] *= 1.5; //multiply by a constant factor
+                          _d[1] *= 1.5; //multiply by a constant factor
+                          return "translate(" + _d + ")";
+                        })
+                        .attr("dy", ".50em")
+                        .style("text-anchor", "middle")
+                        .text(function(d) {
+                          if(d.data.percentage < 8) {
+                            return '';
+                          }
+                          return d.data.percentage + '%';
+                        });
+                          
+                      g.append("text")
+                       .attr("text-anchor", "middle")
+                       .attr('font-size', '3em')
+                       .attr('y', 20)
+                       .text(total_perc + "%");
+
+
+
+
+                       var gauges = [];
+      
+                        function createGauge(name, label, min, max)
+                        {
+                          var config = 
+                          {
+                            size: 120,
+                            label: label,
+                            min: undefined != min ? min : 0,
+                            max: undefined != max ? max : 100,
+                            minorTicks: 5
+                          }
+                          
+                          var range = config.max - config.min;
+                          config.yellowZones = [{ from: config.min + range*0.75, to: config.min + range*0.9 }];
+                          config.redZones = [{ from: config.min + range*0.9, to: config.max }];
+                          
+                          gauges[name] = new Gauge(name + "GaugeContainer", config);
+                          gauges[name].render();
+                        }
+                        
+                        function createGauges()
+                        {
+                          
+                          createGauge("time", "Test", 0, 100 );
+                        }
+                        
+                        function updateGauges()
+                        {
+                          for (var key in gauges)
+                          {
+                            var value = getRandomValue(gauges[key])
+                            gauges[key].redraw(value);
+                          }
+                        }
+                        
+                        function getRandomValue(gauge)
+                        {
+                          var overflow = 0; //10;
+                          return gauge.config.min - overflow + (gauge.config.max - gauge.config.min + overflow*2) *  Math.random();
+                        }
+                        
+                        function initialize()
+                        {
+                          createGauges();
+                          setInterval(updateGauges, 5000);
+                        }
+              }
+
         });
-}
-function refresh(){
-    img.src = url + "?t=" + new Date().getTime();
-    setTimeout("init()",refreshInterval);
+  }
+
 }
 
+function Myfunction(refreshInterval, inputVideo){
+    $.ajax("{{ url_for('get_accuracy') }}", {
+         type : "POST",
+         data: JSON.stringify({'input': inputVideo, 'interval':refreshInterval}, null, '\t'),
+         contentType: 'application/json;charset=UTF-8',
+         success: function(res) {
+            var obj1 = res.result;
+            console.log(obj1);
+            $("#hid_div").text(String(obj1));
+             
+         }
+    });
+
+    }
+
+function refresh(flag, ii, refreshInterval, inputVideo, results_id){
+    img.src = url + "?t=" + new Date().getTime();
+    setTimeout("init(" + flag + " , " + ii + " , " + refreshInterval + " , '" + inputVideo + "' , '" + results_id + "' )",refreshInterval);
+}
+
+function time_performance(refreshInterval){
+// set the dimensions and margins of the graph
+    var margin = {top: 20, right: 40, bottom: 30, left: 50},
+    width = 350 - margin.left - margin.right,
+    height = 270 - margin.top - margin.bottom;
+
+// parse the date / time
+var parseTime = d3.timeParse("%d-%b-%y");
+var tooltip = d3.select("body").append("div").attr("class", "toolTip");
+// set the ranges
+var xBar = d3.scaleBand().range([0, width]).paddingInner(0.5).paddingOuter(0.25);
+var xLine = d3.scalePoint().range([0, width]).padding(0.5);
+var yBar = d3.scaleLinear().range([height, 0]);
+var yLine = d3.scaleLinear().range([height, 0]);
+
+// append the svg obgect to the body of the page
+// appends a 'group' element to 'svg'
+// moves the 'group' element to the top left margin
+var divid = "time"
+if (refreshInterval == 0.7 || refreshInterval == 1000){
+  divid = "time1"
+}
+var svg = d3.select("#"+divid).append("svg")
+    .attr("width", width + margin.left + margin.right)
+    .attr("height", height + margin.top + margin.bottom)
+  .append("g").attr("transform",
+          "translate(" + margin.left + "," + margin.top + ")");
+
+// Get the data
+d3.csv("static/" + divid + ".csv", function(error, data) {
+  if (error) throw error;
+
+  // format the data
+  data.forEach(function(d) {
+      d.bar = +d.bar;
+      d.line1 = +d.line1;
+      d.line2 = +d.line2;
+  });
+  console.table(data);
+  
+  // Scale the range of the data
+  
+  xBar.domain(data.map(function(d) { return d.year; }));
+  xLine.domain(data.map(function(d) { return d.year; }));
+  yBar.domain([0, d3.max(data, function(d) { return d.bar; })]).nice();
+  yLine.domain([0, d3.max(data, function(d) {return d.line1; })]).nice();
+
+  var rect = svg.selectAll("rect").data(data)
+      
+  rect.enter().append("rect")
+    .merge(rect)
+      .attr("class", "bar")
+      .style("stroke", "none")
+      .style("fill", "#ccc")
+      .attr("x", function(d){ return xBar(d.year); })
+      .attr("width", function(d){ return xBar.bandwidth(); })
+      .attr("y", function(d){ return height - d.bar; })
+      .attr("height", function(d){ return d.bar; })
+      .on("mousemove", function(d){
+      tooltip
+      .style("left", d3.event.pageX - 50 + "px")
+      .style("top", d3.event.pageY - 70 + "px")
+      .style("display", "inline-block")
+      .html( d.line2);
+        })
+        .on("mouseout", function(d){ tooltip.style("display", "none");});
+  
+  // Add the X Axis
+  svg.append("g")
+      .attr("transform", "translate(0," + height + ")")
+      .call(d3.axisBottom(xLine));
+
+  // Add the Y0 Axis
+  svg.append("g")
+      .attr("class", "axisSteelBlue")
+      .call(d3.axisLeft(yBar));
+
+  // Add the Y1 Axis
+  svg.append("g")
+      .attr("class", "axisRed")
+      .attr("transform", "translate( " + width + ", 0 )")
+      .call(d3.axisRight(yLine));
+
+});
+
+}
 
 </script>
 <style>
+.toolTip {
+  position: absolute;
+  display: none;
+  min-width: 80px;
+  height: auto;
+  background: none repeat scroll 0 0 #ffffff;
+  border: 1px solid #6F257F;
+  padding: 14px;
+  text-align: center;
+}
 .well {
     background-color: #f1f1f1;
 }
+
+  #feedback { font-size: 1.4em; }
+  #selectable .ui-selecting { background: #FECA40; }
+  #selectable .ui-selected { background: #F39814; color: white; }
+  #selectable { list-style-type: none; margin: 0; padding: 0; width: 30%; }
+  #selectable li { margin: 0px; padding: 0.0em; font-size: 1.2em; height: 18px; }
+
+  h3 {
+    margin-top: 15px;
+}
+.country-name {
+    margin: 0 !important;
+}
+
+.key-dot {
+    display: inline-block;
+    height: 10px;
+    margin-right: .5em;
+    width: 10px;
+}
+
+.legend {
+    margin-right:20px;
+}
+
+.car { background: #1F77B4;}
+.person { background: #FF7F0E;}
+.truck { background: #2CA02C;}
+.bus { background: #000000;}
+.no {background: #ffffff;}
+
+.axisSteelBlue text{
+  fill: steelblue;
+}
+
+.axisRed text{
+  fill: red;
+}
+
+.topcorner {
+  position: absolute;
+  top:0;
+  right:0;
+  margin-right: 15px;
+}
 </style>
+<script src="static/chart.js"></script>
+<script src="static/donut.js"></script> 
+<link rel="stylesheet" href="static/chart.css">
 </body>
 </html>
