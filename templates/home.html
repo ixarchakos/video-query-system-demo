@@ -19,6 +19,73 @@
 </head>
 <body>
 
+<!-- Modal -->
+<div class="modal fade" id="exampleModalLong" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      <div class="modal-body">
+        <div class="row" style="margin-left: 5px">
+          <b>Class selection</b>
+        </div>
+        <div class="row" style="margin-left: 5px; margin-bottom: 10px">
+          
+          <div class="col-md-12">
+
+          <form>
+            <label class="checkbox-inline">
+              <input type="checkbox" value="">Car
+            </label>
+            <label class="checkbox-inline">
+              <input type="checkbox" value="">Truck
+            </label>
+            <label class="checkbox-inline">
+              <input type="checkbox" value="">Person
+            </label>
+            <label class="checkbox-inline">
+              <input type="checkbox" value="" disabled="disabled">Bus
+            </label>
+          </form>
+
+          </div>
+        </div>
+        <div class="row" style="margin-left: 5px">
+          <b>Predicate List</b>
+           <table class="table table-striped" style="margin-top: 10px">
+                <thead>
+                  <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Predicates</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <th scope="row">1</th>
+                    <td>car LEFT TO A truck</td>
+                  </tr>
+                  <tr>
+                    <th scope="row">2</th>
+                    <td>car > 2</td>
+                  </tr>
+                  <tr>
+                    <th scope="row">3</th>
+                    <td>truck = 1</td>
+                  </tr>
+                </tbody>
+            </table>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary">Save changes</button>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Modal -->
+
 <nav class="navbar navbar-inverse visible-xs">
   <div class="container-fluid">
     <div class="navbar-header">
@@ -91,17 +158,24 @@
           <div class="topcorner"><font size="6" color="red"> B </font> </div>
         <h4><b><u><font size="4">Filter selection</font></u></b></h4>
         <div id="radio">
-          <input type="radio" id="cou" name="project1" value="Count">
-          <label for="cou">Count</label>
+          <input type="radio" id="cou" name="project1" value="Count" >
+          <label for="cou" style="margin-right: 5px">Count</label>
      
           <input type="radio" id="cls" name="project1" checked="checked" value="Class count">
-          <label for="cls">Class count</label>
+          <label for="cls" style="margin-right: 5px">Class count</label>
      
           <input type="radio" id="loc" name="project1" value="Localisation">
-          <label for="loc">Localisation</label>
+          <label for="loc" style="margin-right: 5px">Localisation</label>
 
           <input type="radio" id="agg" name="project1" value="Aggregates">
           <label for="agg">Aggregates</label>
+          <div class="row" style="margin-top: 10px;">
+            <div class="col text-center">
+            <button id="predicates_button"type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModalLong" style="visibility: hidden;">
+              Options
+            </button>
+          </div>
+          </div>
         </div>
       </div>
     </div>
@@ -208,8 +282,12 @@ $( function() {
     var $radios = $('input[name="project1"]');
     $radios.change(function() {
       var algorithm = $('input[name="project1"]:checked').val();
+      
       if (algorithm == "Count") {
         $('#sql_text').val(count_query);
+        $("#predicates_button").css("visibility", "hidden");
+      } else {
+        $("#predicates_button").css("visibility", "visible");
       }
     });
 
