@@ -263,3 +263,54 @@ function RadarChart(id, data, options) {
 	}//wrap	
 	
 }//RadarChart
+
+
+    ////
+  // var margin = {top: 5, right: 5, bottom: 5, left: 5},
+  //       width = 250
+  //       height = 250
+  //     var data = [
+  //           [//iPhone
+  //           {axis:"Battery Life",value:0.22},
+  //           {axis:"Truck",value:0.28},
+  //           {axis:"Contract Cost",value:0.29},
+  //           {axis:"Person",value:0.17},
+  //           {axis:"Have Internet Connectivity",value:0.22},
+  //           {axis:"Bus",value:0.02},
+  //           {axis:"Price Of Device",value:0.21},
+  //           {axis:"Car",value:0.50}      
+  //           ],[//Samsung
+  //           {axis:"Battery Life",value:0.27},
+  //           {axis:"Brand",value:0.16},
+  //           {axis:"Contract Cost",value:0.35},
+  //           {axis:"Pedestrian",value:0.13},
+  //           {axis:"Have Internet Connectivity",value:0.20},
+  //           {axis:"Bus",value:0.13},
+  //           {axis:"Truck",value:0.35},
+  //           {axis:"Car",value:0.38}
+  //           ],[//Nokia Smartphone
+  //           {axis:"Battery Life",value:0.26},
+  //           {axis:"Brand",value:0.10},
+  //           {axis:"Contract Cost",value:0.30},
+  //           {axis:"Pedestrian",value:0.14},
+  //           {axis:"Have Internet Connectivity",value:0.22},
+  //           {axis:"Pedestrian",value:0.04},
+  //           {axis:"Pedestrian",value:0.41},
+  //           {axis:"To Be A Smartphone",value:0.30}
+  //           ]
+  //         ];
+  //     var color = d3.scale.ordinal()
+  //       .range(["#EDC951","#CC333F","#00A0B0"]);
+        
+  //     var radarChartOptions = {
+  //       w: width,
+  //       h: height,
+  //       margin: margin,
+  //       maxValue: 0.5,
+  //       levels: 5,
+  //       roundStrokes: true,
+  //       color: color
+  //     };
+  //     //Call function to draw the Radar chart
+  //     RadarChart(".radarChart", data, radarChartOptions);
+      ////
