@@ -1,4 +1,3 @@
-python-forecastio
 flask
 gevent
 pytz
