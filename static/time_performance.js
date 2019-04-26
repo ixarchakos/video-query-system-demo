@@ -1,9 +1,9 @@
 //creates the time performance figure
 function time_performance(refreshInterval){
 // set the dimensions and margins of the graph
-    var margin = {top: 20, right: 40, bottom: 30, left: 50},
-    width = 350 - margin.left - margin.right,
-    height = 270 - margin.top - margin.bottom;
+var margin = {top: 20, right: 40, bottom: 30, left: 50},
+width = 350 - margin.left - margin.right,
+height = 270 - margin.top - margin.bottom;
 
 // parse the date / time
 var parseTime = d3.timeParse("%d-%b-%y");

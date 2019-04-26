@@ -73,3 +73,15 @@ function refresh(flag, ii, refreshInterval, inputVideo, results_id){
     img.src = url + "?t=" + new Date().getTime();
     setTimeout("init(" + flag + " , " + ii + " , " + refreshInterval + " , '" + inputVideo + "' , '" + results_id + "' )",refreshInterval);
 }
+
+// change the visibility of predicate selection on advanced queries
+function predicates_button_visibility(inputVideo){
+    var algorithm = $('input[name="project1"]:checked').val();
+    var count_query = "SELECT cameraID, count(frameID), C1(F1(vehBox1)) AS vehType1, C3(F3(SignBox1)) AS SignType2, C2(F2(vehBox1)) AS vehColor FROM (PROCESS " + inputVideo + " PRODUCE cameraID, frameID, vehBox1 USING VehDetector, SignBox1 USING SignDetector) WINDOW HOPING (SIZE 5000, ADVANCE BY 5000)";
+    if (algorithm == "Count") {
+      $('#sql_text').val(count_query);
+      $("#predicates_button").css("visibility", "hidden");
+    } else {
+      $("#predicates_button").css("visibility", "visible");
+    }
+}

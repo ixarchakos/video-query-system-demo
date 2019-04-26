@@ -16,6 +16,56 @@
     @media screen and (max-width: 767px) {
       .row.content {height: auto;} 
     }
+    .toolTip {
+  position: absolute;
+  display: none;
+  min-width: 80px;
+  height: auto;
+  background: none repeat scroll 0 0 #ffffff;
+  border: 1px solid #6F257F;
+  padding: 14px;
+  text-align: center;
+}
+.well {
+    background-color: #f1f1f1;
+}
+#feedback { font-size: 1.4em; }
+#selectable .ui-selecting { background: #FECA40; }
+#selectable .ui-selected { background: #F39814; color: white; }
+#selectable { list-style-type: none; margin: 0; padding: 0; width: 30%; }
+#selectable li { margin: 0px; padding: 0.0em; font-size: 1.2em; height: 18px; }
+h3 {
+    margin-top: 15px;
+}
+.country-name {
+    margin: 0 !important;
+}
+.key-dot {
+    display: inline-block;
+    height: 10px;
+    margin-right: .5em;
+    width: 10px;
+}
+.legend {
+    margin-right:20px;
+}
+.car { background: #1F77B4;}
+.person { background: #FF7F0E;}
+.truck { background: #2CA02C;}
+.bus { background: #000000;}
+.no {background: #ffffff;}
+.axisSteelBlue text{
+  fill: steelblue;
+}
+.axisRed text{
+  fill: red;
+}
+.topcorner {
+  position: absolute;
+  top:0;
+  right:0;
+  margin-right: 15px;
+}
   </style>
 </head>
 
