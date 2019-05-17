@@ -42,7 +42,7 @@
               <input id = "isPerson" type="checkbox" name="modal_checkbox" value="Person">Person
             </label>
             <label class="checkbox-inline">
-              <input id = "isBus"  type="checkbox" name="modal_checkbox" value="Bus" disabled="disabled">Bus
+              <input id = "isBus"  type="checkbox" name="modal_checkbox" value="Bus" >Bus
             </label>
           </form>
 
@@ -55,39 +55,39 @@
                   <tr>
                     <th scope="col">#</th>
                     <th scope="col">Predicates</th>
-                    <th scope="col">Selection</th>
+                    <!-- <th scope="col">Selection</th> -->
                   </tr>
                 </thead>
                 <tbody>
                   <tr>
                     <th id="row1" scope="row" style="display:none;">1</th>
                     <td id="row_val1" style="display:none;">X</td>
-                    <td id="row1" scope="row" style="display:none;">1</th>
+                    <!-- <td id="row1" scope="row" style="display:none;">1</th> -->
                   </tr>
                   <tr>
                     <th id="row2" scope="row" style="display:none;">2</th>
                     <td id="row_val2" style="display:none;">X</td>
-                    <td id="row1" scope="row" style="display:none;">1</td>
+                    <!-- <td id="row1" scope="row" style="display:none;">1</td> -->
                   </tr>
                   <tr>
                     <th id="row3" scope="row" style="display:none;">3</th>
                     <td id="row_val3" style="display:none;">X</td>
-                    <td id="row1" scope="row" style="display:none;">1</td>
+                    <!-- <td id="row1" scope="row" style="display:none;">1</td> -->
                   </tr>
                   <tr>
                     <th id="row4" scope="row" style="display:none;">4</th>
                     <td id="row_val4" style="display:none;">X</td>
-                    <td id="row1" scope="row" style="display:none;">1</td>
+                    <!-- <td id="row1" scope="row" style="display:none;">1</td> -->
                   </tr>
                   <tr>
                     <th id="row5" scope="row" style="display:none;">5</th>
                     <td id="row_val5" style="display:none;">X</td>
-                    <td id="row1" scope="row" style="display:none;">1</td>
+                    <!-- <td id="row1" scope="row" style="display:none;">1</td> -->
                   </tr>
                   <tr>
                     <th id="row6" scope="row" style="display:none;">6</th>
                     <td id="row_val6" style="display:none;">X</td>
-                    <td id="row1" scope="row" style="display:none;">1</td>
+                    <!-- <td id="row1" scope="row" style="display:none;">1</td> -->
                   </tr>
                 </tbody>
             </table>
@@ -95,7 +95,7 @@
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-primary">Save changes</button>
+        <button type="button" id="save" class="btn btn-primary">Save changes</button>
       </div>
     </div>
   </div>
@@ -141,8 +141,8 @@
           <div class="topcorner"><font size="6" color="red"> A </font> </div>
         <h4><b><u><font size="4">Video source selection</font></u></b></h4>
         <div id="radio_data">
-          <input type="radio" id="det" name="project" value="Detrac">
-          <label for="det">Detrac</label>
+          <input type="radio" id="det" name="project" value="detrac_localisation">
+          <label for="det">detrac_localisation</label>
 
           <input type="radio" id="aqu" name="project" checked="checked" value="Aquarium" >
           <label for="aqu">Aquarium</label>
@@ -275,23 +275,52 @@
 flag = true;
 var canvas, canvas1, context, ii, img, url;
 $(function() {
-    var inputVideo, results_id, count_query, refreshInterval;
+    var inputVideo, results_id, count_query, refreshInterval, filter_type;
     $( "#radio" ).controlgroup();
     $( "#radio_data" ).controlgroup();
     $( "#radio_video" ).controlgroup();
     $( "#selectable" ).selectable();
     
-    // gets the input video and defines the query
+    var map = new Map();
+    $("table tr").click(function(){
+      
+      $(this).closest('tr').find('td').each(
+      function (i) {
+         if (map.has($(this).text())){
+            map.delete($(this).text())
+            $(this).closest('tr').children('td,th').css('background-color','#FFFFFF');
+         } else {
+           $(this).closest('tr').children('td,th').css('background-color','#33FFB8');
+           map.set($(this).text(), 1);
+         }
+      }); 
+    });
+
     $('input[name="project"]').change(function() {
       inputVideo = $('input[name="project"]:checked').val().toLowerCase();
-      count_query = "SELECT cameraID, count(frameID), C1(F1(vehBox1)) AS vehType1, C3(F3(SignBox1)) AS SignType2, C2(F2(vehBox1)) AS vehColor FROM (PROCESS " + inputVideo + " PRODUCE cameraID, frameID, vehBox1 USING VehDetector, SignBox1 USING SignDetector) WINDOW HOPING (SIZE 5000, ADVANCE BY 5000)";
     });
 
     // change the visibility of predicates_button
     $('input[name="project1"]').change(function() {
+      val = $('input[name="project"]:checked').val().toLowerCase()
+      filter_type = $('input[name="project1"]:checked').val().toLowerCase()
+      if (filter_type == 'count'){
+        count_query = queries_per_filter_predicates(filter_type, inputVideo, 0)
+        $( "#sql_text" ).html( count_query );
+      }
+      
+      change_class_visibility_modal(val)
       predicates_button_visibility(inputVideo)
     });
 
+    $( "#save" ).click(function() {
+      count_query = queries_per_filter_predicates(filter_type, inputVideo, map);
+      $( "#sql_text" ).html( count_query );
+      $("#exampleModalLong .close").click()
+
+    });
+
+    // gets the input video and defines the query
     //modal checkbox
     $('input[name="modal_checkbox"]').change(function() {
       var car = document.getElementById('isCar').checked
