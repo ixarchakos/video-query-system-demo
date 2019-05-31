@@ -3,7 +3,7 @@ from flask import Flask, render_template, request, session, redirect, url_for, j
 from flask_socketio import SocketIO,emit, join_room
 from json import loads
 import os, time
-
+import ast
 ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
 
 app = Flask(__name__)
@@ -45,10 +45,12 @@ def get_accuracy():
 
 @app.route("/get_image_prediction", methods=['POST'])
 def get_image_prediction():
-	print('mpika4')
 	count = request.json['count']
 	input_video = request.json['input']
 	interval = request.json['interval']
+	predicates = request.json['predicates']
+	bbox = False
+	image_list = sorted(os.listdir(ROOT_DIR + '/static/images/' + input_video))
 	label = dict()
 	if input_video == 'detrac' and (interval == 300 or interval == 1001):
 		with open('/home/yannis/Documents/video-query-system-demo/static/results/brute/detrac.csv', 'r') as truth:
@@ -66,28 +68,39 @@ def get_image_prediction():
 				split = t.split(',')
 				label[split[0]] = [int(split[1]), int(split[2].rstrip())]
 	elif input_video == 'detrac_localisation' and (interval == 300 or interval == 1001):
-		print('mpika5')
-		with open('/home/yannis/Documents/video-query-system-demo/static/results/localisation/brute/yolo_results_', 'r') as truth:
-			for t in truth:
-				split = t.split(",")
-				if split[-1].strip() == "False":
-					label[split[0]] = ["1", "0"]
-				elif split[-1].strip()  == "True":
-					label[split[0]] = ["1", "1"]
+		if "truck left" in predicates.lower():
+			print('mpika5')
+			with open('/home/yannis/Documents/video-query-system-demo/static/results/localisation/brute/yolo_results_', 'r') as truth:
+				for t in truth:
+					split = t.split(",")
+					if split[-1].strip() == "False":
+						label[split[0]] = ["1", "0"]
+					elif split[-1].strip()  == "True":
+						label[split[0]] = ["1", "1"]
+		elif "car left" in predicates.lower():
+			print('mpika6')
+			with open('/home/yannis/Documents/video-query-system-demo/static/results/localisation/car_left_to_truck/brute/yolo_results_car_left', 'r') as truth:
+				for t in truth:
+					split = t.split(",")
+					if split[-1].strip() == "False":
+						label[split[0]] = ["1", "0"]
+					elif split[-1].strip()  == "True":
+						label[split[0]] = ["1", "1"]
 
+					json_dict = split[1]
+					print(ast.literal_eval(json_dict))
 
-	print(label)
-	image_list = sorted(os.listdir(ROOT_DIR + '/static/images/' + input_video))
+	
 	prediction = False
 	if label[image_list[count]][0] == label[image_list[count]][1]:
 		prediction = True
-	return jsonify({"result": {'value':image_list[count], 'prediction': prediction}})
+	return jsonify({"result": {'value':image_list[count], 'prediction': prediction, 'bbox':bbox}})
 	
 
 @app.route("/index")
 @app.route("/", methods=["GET"])
 def index():
-    return render_template("home.html")
+	return render_template("home.html")
 
 
 if __name__ == '__main__':

@@ -275,13 +275,13 @@
 flag = true;
 var canvas, canvas1, context, ii, img, url;
 $(function() {
-    var inputVideo, results_id, count_query, refreshInterval, filter_type;
+    var inputVideo, results_id, count_query, refreshInterval, filter_type, predicate;
     $( "#radio" ).controlgroup();
     $( "#radio_data" ).controlgroup();
     $( "#radio_video" ).controlgroup();
     $( "#selectable" ).selectable();
     
-    var map = new Map();
+    map = new Map();
     $("table tr").click(function(){
       
       $(this).closest('tr').find('td').each(
@@ -314,6 +314,9 @@ $(function() {
     });
 
     $( "#save" ).click(function() {
+      map.forEach(function (item, key, mapObj){
+        predicates=key
+      });
       count_query = queries_per_filter_predicates(filter_type, inputVideo, map);
       $( "#sql_text" ).html( count_query );
       $("#exampleModalLong .close").click()
@@ -363,7 +366,7 @@ $(function() {
       canvas1 = document.getElementById(out_canv);
       context = canvas.getContext("2d");
       Myfunction(refreshInterval, inputVideo);
-      init(true, 0, refreshInterval, inputVideo, "accopt");
+      init(true, 0, refreshInterval, inputVideo, "accopt", predicates);
     });
 
     // select to run the brute force version
@@ -374,13 +377,13 @@ $(function() {
       canvas1 = document.getElementById(out_canv);
       context = canvas.getContext("2d");
       Myfunction(refreshInterval, inputVideo);
-      init(true, 0, refreshInterval, inputVideo, "accopt1");
+      init(true, 0, refreshInterval, inputVideo, "accopt1", predicates);
     });
 
   } );
 
 //display the frames as video
-function init(flag, ii, refreshInterval, inputVideo, results_id) {
+function init(flag, ii, refreshInterval, inputVideo, results_id, predicates) {
   img = new Image();
   if (flag) {
     var margin = {top: 5, right: 5, bottom: 5, left: 5}, width = 250, height = 250
@@ -388,6 +391,13 @@ function init(flag, ii, refreshInterval, inputVideo, results_id) {
         canvas.setAttribute("width", 390);
         canvas.setAttribute("height", 280);
         context.drawImage(this, 0, 0, 400, 280);
+
+          context.beginPath();
+          context.rect(466.51092529296875*(390.0/550.2723388671875), 234.46115112304688, 550.2723388671875, 319.66400146484375);
+
+          context.lineWidth = 3;
+          context.strokeStyle = 'black';
+          context.stroke();
         if(true) {
             var now = new Date();
             var text = now.toLocaleDateString() + " " + now.toLocaleTimeString();
@@ -403,7 +413,7 @@ function init(flag, ii, refreshInterval, inputVideo, results_id) {
     };
     $.ajax("{{ url_for('get_image_prediction') }}", {
        type : "POST",
-       data: JSON.stringify({'count': ii, 'input': inputVideo, 'interval':refreshInterval}, null, '\t'),
+       data: JSON.stringify({'count': ii, 'input': inputVideo, 'interval':refreshInterval, 'predicates': predicates}, null, '\t'),
        contentType: 'application/json;charset=UTF-8',
        success: function(res) {
         var obj = res.result;
@@ -411,7 +421,7 @@ function init(flag, ii, refreshInterval, inputVideo, results_id) {
         url = img_location.concat(String(obj.value));
         (obj.prediction) ? $("#"+out_canv).css("background-color","green") : $("#"+out_canv).css("background-color","red");
         ii = ii + 1;
-        refresh(flag, ii, refreshInterval, inputVideo , results_id);
+        refresh(flag, ii, refreshInterval, inputVideo , results_id, predicates);
        },
       error: function (jqXHR, exception) {
         time_performance(refreshInterval);
