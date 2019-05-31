@@ -51,7 +51,7 @@ def get_image_prediction():
 	predicates = request.json['predicates']
 	bbox = False
 	image_list = sorted(os.listdir(ROOT_DIR + '/static/images/' + input_video))
-	label = dict()
+	label, bbox = dict(), dict()
 	if input_video == 'detrac' and (interval == 300 or interval == 1001):
 		with open('/home/yannis/Documents/video-query-system-demo/static/results/brute/detrac.csv', 'r') as truth:
 			for t in truth:
@@ -87,14 +87,23 @@ def get_image_prediction():
 					elif split[-1].strip()  == "True":
 						label[split[0]] = ["1", "1"]
 
-					json_dict = split[1]
-					print(ast.literal_eval(json_dict))
+					json_dict = split[1:-2]
+					json_dict = ','.join(json_dict)
+					if json_dict == "{}":
+						bbox[split[0]] = None
+					else:
+						json_dict = ast.literal_eval(json_dict)
+						for i, d in enumerate(json_dict[split[0]]):
+							if i == 0:
+								bbox[split[0]] = [d["bbox"]]
+							else:
+								bbox[split[0]].extend([d["bbox"]])
 
 	
 	prediction = False
 	if label[image_list[count]][0] == label[image_list[count]][1]:
 		prediction = True
-	return jsonify({"result": {'value':image_list[count], 'prediction': prediction, 'bbox':bbox}})
+	return jsonify({"result": {'value':image_list[count], 'prediction': prediction, 'bbox':bbox[image_list[count]]}})
 	
 
 @app.route("/index")

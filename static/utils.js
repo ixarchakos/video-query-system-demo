@@ -69,9 +69,9 @@ function modal_checkbox_display(car, truck, person) {
 };
 
 //refresh frane
-function refresh(flag, ii, refreshInterval, inputVideo, results_id, predicates){
+function refresh(flag, ii, refreshInterval, inputVideo, results_id, predicates, bbox){
     img.src = url + "?t=" + new Date().getTime();
-    setTimeout("init(" + flag + " , " + ii + " , " + refreshInterval + " , '" + inputVideo + "' , '" + results_id + "' , '" + predicates + "' )",refreshInterval);
+    setTimeout("init(" + flag + " , " + ii + " , " + refreshInterval + " , '" + inputVideo + "' , '" + results_id + "' , '" + predicates + "' , " + bbox + " )",refreshInterval);
 }
 
 // change the visibility of predicate selection on advanced queries
