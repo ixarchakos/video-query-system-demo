@@ -143,9 +143,9 @@
         <div id="radio_data">
           <input type="radio" id="det" name="project" value="detrac_localisation">
           <label for="det">detrac_localisation</label>
-
+<!-- 
           <input type="radio" id="aqu" name="project" checked="checked" value="Aquarium" >
-          <label for="aqu">Aquarium</label>
+          <label for="aqu">Aquarium</label> -->
      
           <input type="radio" id="squ" name="project" value="Square">
           <label for="squ">Square</label>
@@ -166,22 +166,23 @@
 
     <div class="col-sm-4">
       <div class="well" style="height:200px;">
-        <div class="row" style="margin-left: 10px;">
-          <div class="topcorner"><font size="6" color="red"> B </font> </div>
         <h4><b><u><font size="4">Filter selection</font></u></b></h4>
+        <div class="row" style="margin-left: 50px;">
+          <div class="topcorner"><font size="6" color="red"> B </font> </div>
+        
         <div id="radio">
           <input type="radio" id="cou" name="project1" value="Count" >
-          <label for="cou" style="margin-right: 5px">Count</label>
+          <label for="cou" style="margin-right: 15px">Count</label>
      
-          <input type="radio" id="cls" name="project1" checked="checked" value="Class count">
-          <label for="cls" style="margin-right: 5px">Class count</label>
+          <input type="radio" id="cls" name="project1" value="Class count">
+          <label for="cls" style="margin-right: 15px">Class count</label>
      
           <input type="radio" id="loc" name="project1" value="Localisation">
           <label for="loc" style="margin-right: 5px">Localisation</label>
 
-          <input type="radio" id="agg" name="project1" value="Aggregates">
-          <label for="agg">Aggregates</label>
-          <div class="row" style="margin-top: 10px;">
+<!--           <input type="radio" id="agg" name="project1" value="Aggregates">
+          <label for="agg">Aggregates</label> -->
+          <div class="row" style="margin-top: 10px;margin-right: 50px;">
             <div class="col text-center">
             <button id="predicates_button"type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModalLong" style="visibility: hidden;">
               Options
@@ -303,13 +304,17 @@ $(function() {
     // change the visibility of predicates_button
     $('input[name="project1"]').change(function() {
       val = $('input[name="project"]:checked').val().toLowerCase()
+      change_class_visibility_modal(val)
+
       filter_type = $('input[name="project1"]:checked').val().toLowerCase()
       if (filter_type == 'count'){
         count_query = queries_per_filter_predicates(filter_type, inputVideo, 0)
         $( "#sql_text" ).html( count_query );
+      } else if (filter_type == 'class count' || filter_type == 'localisation' ){
+        $("#isTruck").prop('disabled', true);
+        $("#isPerson").prop('disabled', true);
       }
       
-      change_class_visibility_modal(val)
       predicates_button_visibility(inputVideo)
     });
 
@@ -329,23 +334,40 @@ $(function() {
       var car = document.getElementById('isCar').checked
       var truck = document.getElementById('isTruck').checked
       var person = document.getElementById('isPerson').checked
-      modal_checkbox_display(car, truck, person)
-      if (car && truck && person) {
-        document.getElementById('row_val1').innerText = 'car LEFT TO A truck';
-        document.getElementById('row_val2').innerText = 'truck LEFT TO A car';
-        document.getElementById('row_val3').innerText = 'car LEFT TO A person';
-        document.getElementById('row_val4').innerText = 'person LEFT TO A car';
-        document.getElementById('row_val5').innerText = 'truck LEFT TO A person';
-        document.getElementById('row_val6').innerText = 'person LEFT TO A truck';
-      } else if (car && person) {
-        document.getElementById('row_val1').innerText = 'car LEFT TO A person';
-        document.getElementById('row_val2').innerText = 'person LEFT TO A car';
-      } else if (truck && person) {
-        document.getElementById('row_val1').innerText = 'truck LEFT TO A person';
-        document.getElementById('row_val2').innerText = 'person LEFT TO A truck';
-      } else if (truck && car) {
-        document.getElementById('row_val1').innerText = 'car LEFT TO A truck';
-        document.getElementById('row_val2').innerText = 'truck LEFT TO A car';
+      var bus = document.getElementById('isBus').checked
+      modal_checkbox_display(car, truck, person, bus)
+      if (filter_type == 'localisation'){
+        if (car && truck && person) {
+          document.getElementById('row_val1').innerText = 'car LEFT TO A truck';
+          document.getElementById('row_val2').innerText = 'truck LEFT TO A car';
+          document.getElementById('row_val3').innerText = 'car LEFT TO A person';
+          document.getElementById('row_val4').innerText = 'person LEFT TO A car';
+          document.getElementById('row_val5').innerText = 'truck LEFT TO A person';
+          document.getElementById('row_val6').innerText = 'person LEFT TO A truck';
+        } else if (car && person) {
+          document.getElementById('row_val1').innerText = 'car LEFT TO A person';
+          document.getElementById('row_val2').innerText = 'person LEFT TO A car';
+        } else if (truck && person) {
+          document.getElementById('row_val1').innerText = 'truck LEFT TO A person';
+          document.getElementById('row_val2').innerText = 'person LEFT TO A truck';
+        } else if (truck && car) {
+          document.getElementById('row_val1').innerText = 'car LEFT TO A truck';
+          document.getElementById('row_val2').innerText = 'truck LEFT TO A car';
+        } else if (car && bus){
+          document.getElementById('row_val1').innerText = 'car LEFT TO A bus';
+          document.getElementById('row_val2').innerText = 'bus LEFT TO A car';
+        }
+      } else if (filter_type == "class count"){
+        if (car && bus){
+          document.getElementById('row_val1').innerText = 'car > 7';
+          document.getElementById('row_val2').innerText = 'bus == 1';
+        }
+        else if (car){
+          document.getElementById('row_val1').innerText = 'car > 7';
+        }
+        else if (bus){
+          document.getElementById('row_val1').innerText = 'bus == 1';
+        }
       }
     });
 
@@ -365,8 +387,15 @@ $(function() {
       canvas = document.getElementById("canvas");
       canvas1 = document.getElementById(out_canv);
       context = canvas.getContext("2d");
+      
+      if (typeof predicates === 'undefined') {
+        predicates = ""
+        if (inputVideo.toLowerCase() == "detrac_localisation"){
+          inputVideo = "detrac"
+        }
+      }
       Myfunction(refreshInterval, inputVideo);
-      init(true, 0, refreshInterval, inputVideo, "accopt", predicates, null);
+      init(true, 0, refreshInterval, inputVideo, "accopt", predicates, "");
     });
 
     // select to run the brute force version
@@ -376,8 +405,15 @@ $(function() {
       canvas = document.getElementById("canvas2");
       canvas1 = document.getElementById(out_canv);
       context = canvas.getContext("2d");
+      if (typeof predicates === 'undefined') {
+        predicates = ""
+        if (inputVideo.toLowerCase() == "detrac_localisation"){
+          inputVideo = "detrac"
+        }
+      }
       Myfunction(refreshInterval, inputVideo);
-      init(true, 0, refreshInterval, inputVideo, "accopt1", predicates, null);
+
+      init(true, 0, refreshInterval, inputVideo, "accopt1", predicates, "");
     });
 
   } );
@@ -392,9 +428,17 @@ function init(flag, ii, refreshInterval, inputVideo, results_id, predicates, bbo
         canvas.setAttribute("height", 280);
         context.drawImage(this, 0, 0, 400, 280);
         context.beginPath();
-        console.log(typeof bbox);
-        context.rect(50, 50, 100, 100);
-
+        bbox = bbox.split(",");
+         var tmp = [];
+         var x = -1
+        for (let i=0; i<bbox.length; i++) {
+          tmp.push(parseFloat(bbox[i]))
+          if (i == x+4){
+            context.rect(tmp[0] * 0.40625,tmp[1] * 0.518518519,(tmp[2]-tmp[0]) * 0.40625,(tmp[3]-tmp[1]) * 0.518518519);
+            x = x+4
+            tmp = [];
+          }
+        }
         context.lineWidth = 5;
         context.strokeStyle = 'black';
         context.stroke();
@@ -421,14 +465,17 @@ function init(flag, ii, refreshInterval, inputVideo, results_id, predicates, bbo
         img_location = '/static/images/'+inputVideo+'/';
         url = img_location.concat(String(obj.value));
         (obj.prediction) ? $("#"+out_canv).css("background-color","green") : $("#"+out_canv).css("background-color","red"); 
-        if (obj.bbox !== null) {
-        console.log(obj.bbox)
-        obj.bbox.forEach(function (item, key, mapObj){
-          alert(item[0] + " - " +item[1] + " - " + item[2] + " - " + item[3] );
-        });
-      }
+        if (typeof obj.bbox !== 'undefined' && obj.bbox != null) {
+          var bbox_array = [];
+          obj.bbox.forEach(function (item, key, mapObj){
+            bbox_array.push(item[0]);
+            bbox_array.push(item[1]);
+            bbox_array.push(item[2]);
+            bbox_array.push(item[3]);
+          });
+        }
         ii = ii + 1;
-        refresh(flag, ii, refreshInterval, inputVideo , results_id, predicates, obj.bbox);
+        refresh(flag, ii, refreshInterval, inputVideo , results_id, predicates, bbox_array);
        },
       error: function (jqXHR, exception) {
         time_performance(refreshInterval);

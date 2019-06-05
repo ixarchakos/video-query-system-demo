@@ -2,6 +2,7 @@ from datetime import timedelta, datetime
 from flask import Flask, render_template, request, session, redirect, url_for, jsonify, flash
 from flask_socketio import SocketIO,emit, join_room
 from json import loads
+from app.utils import get_pred_bbox
 import os, time
 import ast
 ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -57,6 +58,11 @@ def get_image_prediction():
 			for t in truth:
 				split = t.split(',')
 				label[split[0]] = [int(split[1]), int(split[2].rstrip())]
+	elif input_video == 'detrac' and (interval == 0.7 or interval == 1000):
+		with open('/home/yannis/Documents/video-query-system-demo/static/results/brute/detrac.csv', 'r') as truth:
+			for t in truth:
+				split = t.split(',')
+				label[split[0]] = [int(split[1]), int(split[2].rstrip())]
 	elif input_video == 'square' and (interval == 300 or interval == 1001):
 		with open('/home/yannis/Documents/video-query-system-demo/static/results/brute/square.csv', 'r') as truth:
 			for t in truth:
@@ -68,42 +74,28 @@ def get_image_prediction():
 				split = t.split(',')
 				label[split[0]] = [int(split[1]), int(split[2].rstrip())]
 	elif input_video == 'detrac_localisation' and (interval == 300 or interval == 1001):
-		if "truck left" in predicates.lower():
+		if "bus left" in predicates.lower():
 			print('mpika5')
 			with open('/home/yannis/Documents/video-query-system-demo/static/results/localisation/brute/yolo_results_', 'r') as truth:
-				for t in truth:
-					split = t.split(",")
-					if split[-1].strip() == "False":
-						label[split[0]] = ["1", "0"]
-					elif split[-1].strip()  == "True":
-						label[split[0]] = ["1", "1"]
+				label, bbox = get_pred_bbox(truth)
 		elif "car left" in predicates.lower():
 			print('mpika6')
 			with open('/home/yannis/Documents/video-query-system-demo/static/results/localisation/car_left_to_truck/brute/yolo_results_car_left', 'r') as truth:
-				for t in truth:
-					split = t.split(",")
-					if split[-1].strip() == "False":
-						label[split[0]] = ["1", "0"]
-					elif split[-1].strip()  == "True":
-						label[split[0]] = ["1", "1"]
-
-					json_dict = split[1:-2]
-					json_dict = ','.join(json_dict)
-					if json_dict == "{}":
-						bbox[split[0]] = None
-					else:
-						json_dict = ast.literal_eval(json_dict)
-						for i, d in enumerate(json_dict[split[0]]):
-							if i == 0:
-								bbox[split[0]] = [d["bbox"]]
-							else:
-								bbox[split[0]].extend([d["bbox"]])
-
-	
+				label, bbox = get_pred_bbox(truth)
+		elif "bus == 1" in predicates.lower():
+			with open('/home/yannis/Documents/video-query-system-demo/static/results/class_count/bus/brute/yolo_results_bus_count', 'r') as truth:
+				label, bbox = get_pred_bbox(truth)
+		elif "car > 7" in predicates.lower():
+			with open('/home/yannis/Documents/video-query-system-demo/static/results/class_count/car/brute/yolo_results_car_count', 'r') as truth:
+				label, bbox = get_pred_bbox(truth)
+	print(label)
 	prediction = False
 	if label[image_list[count]][0] == label[image_list[count]][1]:
 		prediction = True
-	return jsonify({"result": {'value':image_list[count], 'prediction': prediction, 'bbox':bbox[image_list[count]]}})
+	if len(bbox) == 0:
+		return jsonify({"result": {'value':image_list[count], 'prediction': prediction}})
+	else:
+		return jsonify({"result": {'value':image_list[count], 'prediction': prediction, 'bbox':bbox[image_list[count]]}})
 	
 
 @app.route("/index")

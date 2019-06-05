@@ -1,6 +1,6 @@
 //enable/disable table rows
-function modal_checkbox_display(car, truck, person) {
-  if (truck && person && car) {
+function modal_checkbox_display(car, truck, person, bus) {
+  if (truck && person && car && bus) {
     document.getElementById('row1').style.display = '';
     document.getElementById('row2').style.display = '';
     document.getElementById('row3').style.display = '';
@@ -52,6 +52,19 @@ function modal_checkbox_display(car, truck, person) {
     document.getElementById('row_val4').style.display = 'none';
     document.getElementById('row_val5').style.display = 'none';
     document.getElementById('row_val6').style.display = 'none';
+  } else if (car && bus) {
+        document.getElementById('row1').style.display = '';
+    document.getElementById('row2').style.display = '';
+    document.getElementById('row_val1').style.display = '';
+    document.getElementById('row_val2').style.display = '';
+      document.getElementById('row3').style.display = 'none';
+    document.getElementById('row4').style.display = 'none';
+    document.getElementById('row5').style.display = 'none';
+    document.getElementById('row6').style.display = 'none';
+    document.getElementById('row_val3').style.display = 'none';
+    document.getElementById('row_val4').style.display = 'none';
+    document.getElementById('row_val5').style.display = 'none';
+    document.getElementById('row_val6').style.display = 'none';
   } else {
     document.getElementById('row1').style.display = 'none';
     document.getElementById('row2').style.display = 'none';
@@ -70,8 +83,15 @@ function modal_checkbox_display(car, truck, person) {
 
 //refresh frane
 function refresh(flag, ii, refreshInterval, inputVideo, results_id, predicates, bbox){
+    
+    var bbox_array = [];
+    if (typeof bbox !== 'undefined'){
+    bbox.forEach(function (item, key, mapObj){
+      bbox_array.push(item);
+    });
+    }
     img.src = url + "?t=" + new Date().getTime();
-    setTimeout("init(" + flag + " , " + ii + " , " + refreshInterval + " , '" + inputVideo + "' , '" + results_id + "' , '" + predicates + "' , " + bbox + " )",refreshInterval);
+    setTimeout("init(" + flag + " , " + ii + " , " + refreshInterval + " , '" + inputVideo + "' , '" + results_id + "' , '" + predicates + "' , '" + bbox_array + "' )",refreshInterval);
 }
 
 // change the visibility of predicate selection on advanced queries
@@ -108,6 +128,10 @@ function queries_per_filter_predicates(val, inputVideo, map){
     if (val == "count"){
         query = "SELECT cameraID, count(frameID), C1(F1(vehBox1)) AS vehType1, C3(F3(SignBox1)) AS SignType2, C2(F2(vehBox1)) AS vehColor FROM (PROCESS " + inputVideo + " PRODUCE cameraID, frameID, vehBox1 USING VehDetector, SignBox1 USING SignDetector) WINDOW HOPING (SIZE 5000, ADVANCE BY 5000)";
     } else if (val == 'localisation' && map != 0){
+        map.forEach(function (item, key, mapObj){
+          query = "SELECT cameraID, frameID, C1(F1(vehBox1)) AS vehType1, C3(F3(SignBox1)) AS SignType2, C2(F2(vehBox1)) AS vehColor FROM (PROCESS " + inputVideo + " PRODUCE cameraID, frameID, vehBox1 USING VehDetector, SignBox1 USING SignDetector) WHERE "+ key +" WINDOW HOPING (SIZE 5000, ADVANCE BY 5000)";
+        }); 
+    } else if (val == 'class count' && map != 0){
         map.forEach(function (item, key, mapObj){
           query = "SELECT cameraID, frameID, C1(F1(vehBox1)) AS vehType1, C3(F3(SignBox1)) AS SignType2, C2(F2(vehBox1)) AS vehColor FROM (PROCESS " + inputVideo + " PRODUCE cameraID, frameID, vehBox1 USING VehDetector, SignBox1 USING SignDetector) WHERE "+ key +" WINDOW HOPING (SIZE 5000, ADVANCE BY 5000)";
         }); 
