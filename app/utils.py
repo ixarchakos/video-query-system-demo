@@ -22,3 +22,13 @@ def get_pred_bbox(truth):
 					bbox[split[0]].extend([d["bbox"]])
 
 	return label, bbox
+
+def get_pred_accuracy(truth):
+	correct, total = 0., 0.
+	for t in truth:
+		split = t.split(',')
+		print(split[-1])
+		if split[-1].strip() == "True":
+			correct += 1
+		total += 1
+	return float(correct)/float(total)

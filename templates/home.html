@@ -394,7 +394,7 @@ $(function() {
           inputVideo = "detrac"
         }
       }
-      Myfunction(refreshInterval, inputVideo);
+      Myfunction(refreshInterval, inputVideo, predicates);
       init(true, 0, refreshInterval, inputVideo, "accopt", predicates, "");
     });
 
@@ -411,7 +411,7 @@ $(function() {
           inputVideo = "detrac"
         }
       }
-      Myfunction(refreshInterval, inputVideo);
+      Myfunction(refreshInterval, inputVideo, predicates);
 
       init(true, 0, refreshInterval, inputVideo, "accopt1", predicates, "");
     });
@@ -486,10 +486,10 @@ function init(flag, ii, refreshInterval, inputVideo, results_id, predicates, bbo
 }
 
 //fix the speed of displaying video
-function Myfunction(refreshInterval, inputVideo){
+function Myfunction(refreshInterval, inputVideo, predicates){
     $.ajax("{{ url_for('get_accuracy') }}", {
          type : "POST",
-         data: JSON.stringify({'input': inputVideo, 'interval':refreshInterval}, null, '\t'),
+         data: JSON.stringify({'input': inputVideo, 'interval':refreshInterval, 'predicates': predicates}, null, '\t'),
          contentType: 'application/json;charset=UTF-8',
          success: function(res) {
             var obj1 = res.result;
