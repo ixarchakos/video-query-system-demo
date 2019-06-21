@@ -1,5 +1,5 @@
       
-function accuracy_pie(refreshInterval, results_id){
+function accuracy_pie(refreshInterval, results_id, predicate){
     var data = [
       {name: 'No class', count: 100, percentage: 0, color: '#ffffff'},
       // {name: 'car', count: 60, percentage: 53, color: '#1F77B4'},
@@ -9,9 +9,91 @@ function accuracy_pie(refreshInterval, results_id){
     ];
     
     if (refreshInterval == 0.7 || refreshInterval == 1000){
-      $(".legend1").css("display", "block");
+      // $(".legend1").css("display", "block");
+      if (predicate ==  ""){
+        $("#no_optimisation").css("display", "block");
+        var data = [{name: 'No class', count: 100, percentage: 0, color: '#ffffff'}];
+      } else if (predicate == "car > 1"){
+        $("#car_led1").css("display", "block");
+        var data = [{name: 'car', count: 100, percentage: 0, color: '#1F77B4'}];
+      } else if (predicate == "bus == 1"){
+        $("#bus_led1").css("display", "block");
+         var data = [{name: 'bus', count: 100, percentage: 0, color: '#000000'}];
+      }else if (predicate == "car BEHIND car"){
+        $("#car_led1").css("display", "block");
+        var data = [{name: 'car', count: 100, percentage: 0, color: '#1F77B4'}];
+      } else if (predicate == "car LEFT TO A bus"){
+        $("#car_led1").css("display", "block");
+        $("#bus_led1").css("display", "block");
+        var data = [{name: 'car', count: 67, percentage: 0, color: '#1F77B4'},
+        {name: 'bus', count: 33, percentage: 0, color: '#000000'}];
+      } else if (predicate == "car >= 3"){
+        $("#car_led1").css("display", "block");
+        var data = [{name: 'car', count: 100, percentage: 0, color: '#1F77B4'}];
+      } else if (predicate == "bus >= 2"){
+        $("#bus_led1").css("display", "block");
+        var data = [{name: 'bus', count: 100, percentage: 0, color: '#000000'}];
+      } else if (predicate == "bus RIGHT car") {
+        $("#car_led1").css("display", "block");
+        $("#bus_led1").css("display", "block");
+        var data = [{name: 'car', count: 63, percentage: 0, color: '#1F77B4'},
+        {name: 'bus', count: 37, percentage: 0, color: '#000000'}];
+      } else if (predicate == "car BEHIND bus") {
+        $("#car_led1").css("display", "block");
+        $("#bus_led1").css("display", "block");
+        var data = [{name: 'car', count: 53, percentage: 0, color: '#1F77B4'},
+        {name: 'bus', count: 47, percentage: 0, color: '#000000'}];
+      }
+
+
     } else if (refreshInterval == 300 || refreshInterval == 1001){
-      $(".legend0").css("display", "block");
+      // $(".legend0").css("display", "block");
+      if (predicate ==  ""){
+        $("#no_brute_force").css("display", "block");
+        var data = [
+      {name: 'No class', count: 100, percentage: 0, color: '#ffffff'},
+      // {name: 'car', count: 60, percentage: 53, color: '#1F77B4'},
+      // {name: 'person', count: 10, percentage: 12, color: '#FF7F0E'},
+      // {name: 'truck', count: 17, percentage: 30, color: '#2CA02C'},
+      // {name: 'bus', count: 12, percentage: 5, color: '#000000'},
+      ];
+      } else if (predicate == "car > 1"){
+        $("#car_led").css("display", "block");
+        var data = [{name: 'car', count: 100, percentage: 0, color: '#1F77B4'}];
+      } else if (predicate == "bus == 1"){
+        $("#bus_led").css("display", "block");
+         var data = [{name: 'bus', count: 100, percentage: 0, color: '#000000'}];
+      } else if (predicate == "car BEHIND car"){
+        $("#car_led").css("display", "block");
+        var data = [{name: 'car', count: 100, percentage: 0, color: '#1F77B4'}];
+      } else if (predicate == "car BEHIND car"){
+        $("#car_led").css("display", "block");
+        var data = [{name: 'car', count: 100, percentage: 0, color: '#1F77B4'}];
+      } else if (predicate == "car LEFT TO A bus"){
+        $("#car_led").css("display", "block");
+        $("#bus_led").css("display", "block");
+        var data = [{name: 'car', count: 67, percentage: 0, color: '#1F77B4'},
+        {name: 'bus', count: 33, percentage: 0, color: '#000000'}];
+      } else if (predicate == "car >= 3"){
+        $("#car_led").css("display", "block");
+        var data = [{name: 'car', count: 100, percentage: 0, color: '#1F77B4'}];
+      } else if (predicate == "bus >= 2"){
+        $("#bus_led").css("display", "block");
+        var data = [{name: 'bus', count: 100, percentage: 0, color: '#000000'}];
+      } else if (predicate == "bus RIGHT car") {
+        $("#car_led").css("display", "block");
+        $("#bus_led").css("display", "block");
+        var data = [{name: 'car', count: 63, percentage: 0, color: '#1F77B4'},
+        {name: 'bus', count: 37, percentage: 0, color: '#000000'}];
+      } else if (predicate == "car BEHIND bus") {
+        $("#car_led").css("display", "block");
+        $("#bus_led").css("display", "block");
+        var data = [{name: 'car', count: 53, percentage: 0, color: '#1F77B4'},
+        {name: 'bus', count: 47, percentage: 0, color: '#000000'}];
+      }
+
+      
+
     }
     var total_perc =  parseFloat($("#hid_div").text())  //calcuting total manually
     var width = 280,
